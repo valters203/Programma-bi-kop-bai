@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Add Apiary - Beekeeping Management{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">Add New Apiary</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Apiary Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location Description</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., Forest near Riga">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" step="any" class="form-control" id="latitude" name="latitude" placeholder="Click on map to set">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" step="any" class="form-control" id="longitude" name="longitude" placeholder="Click on map to set">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Select Location on Map</label>
+                        <div id="map" style="height: 400px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Add Apiary</button>
+                        <a href="{{ url_for('apiaries') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var defaultLat = 56.9496;
+        var defaultLng = 24.1052;
+
+        var latInput = document.getElementById("latitude");
+        var lngInput = document.getElementById("longitude");
+
+        var startLat = parseFloat(latInput.value) || defaultLat;
+        var startLng = parseFloat(lngInput.value) || defaultLng;
+
+        var map = L.map("map").setView([startLat, startLng], 7);
+
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+            subdomains: "abcd",
+            maxZoom: 20,
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        }).addTo(map);
+
+        var marker = L.marker([startLat, startLng], { draggable: true }).addTo(map);
+
+        function updateFields(lat, lng) {
+            latInput.value = Number(lat).toFixed(6);
+            lngInput.value = Number(lng).toFixed(6);
+        }
+
+        marker.on("dragend", function () {
+            var position = marker.getLatLng();
+            updateFields(position.lat, position.lng);
+        });
+
+        map.on("click", function (e) {
+            marker.setLatLng(e.latlng);
+            updateFields(e.latlng.lat, e.latlng.lng);
+        });
+
+        function updateMarkerFromInputs() {
+            var lat = parseFloat(latInput.value);
+            var lng = parseFloat(lngInput.value);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                marker.setLatLng([lat, lng]);
+                map.setView([lat, lng], 13);
+            }
+        }
+
+        latInput.addEventListener("change", updateMarkerFromInputs);
+        lngInput.addEventListener("change", updateMarkerFromInputs);
+
+        updateFields(startLat, startLng);
+
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 300);
+    });
+</script>
+{% endblock %}

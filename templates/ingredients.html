@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe_name }} Ingredients - Beekeeping Management{% endblock %}
+
+{% block content %}
+<h2>{{ recipe_name }} - Ingredients</h2>
+<p><strong>Yield:</strong> {{ recipe_yield }} {{ recipe_yield_unit }}</p>
+<a href="{{ url_for('add_ingredient', recipe_id=recipe_id) }}" class="btn btn-primary mb-3">Add Ingredient</a>
+<a href="{{ url_for('recipes') }}" class="btn btn-secondary mb-3">Back to Recipes</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Ingredient</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ingredient in ingredients %}
+        <tr>
+            <td>{{ ingredient[1] }}</td>
+            <td>{{ ingredient[2] }} {{ ingredient[3] }}</td>
+            <td>
+                <a href="{{ url_for('edit_ingredient', recipe_id=recipe_id, ing_id=ingredient[0]) }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('delete_ingredient', recipe_id=recipe_id, ing_id=ingredient[0]) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

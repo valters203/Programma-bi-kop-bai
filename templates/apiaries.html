@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Apiaries - Beekeeping Management{% endblock %}
+
+{% block content %}
+<h2>Apiaries</h2>
+<a href="{{ url_for('add_apiary') }}" class="btn btn-primary mb-3">Add New Apiary</a>
+<a href="{{ url_for('export_apiaries') }}" class="btn btn-success mb-3">Export to Excel</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Last Visited</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for apiary in apiaries %}
+        <tr>
+            <td><a href="{{ url_for('view_apiary', apiary_id=apiary[0]) }}">{{ apiary[1] }}</a></td>
+            <td>
+                {% if apiary[2] %}{{ apiary[2] }}{% endif %}
+                {% if apiary[3] and apiary[4] %}
+                    {% if apiary[2] %}<br>{% endif %}
+                    ({{ "%.6f"|format(apiary[3]) }}, {{ "%.6f"|format(apiary[4]) }})
+                {% endif %}
+                {% if not apiary[2] and not (apiary[3] and apiary[4]) %}Not specified{% endif %}
+            </td>
+            <td>{{ apiary[5] or 'Never' }}</td>
+            <td>
+                <a href="{{ url_for('mark_visit', apiary_id=apiary[0]) }}" class="btn btn-sm btn-success">Mark Visit</a>
+                <a href="{{ url_for('edit_apiary', id=apiary[0]) }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('delete_apiary', id=apiary[0]) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

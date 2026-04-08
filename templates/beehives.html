@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ apiary_name }} Beehives - Beekeeping Management{% endblock %}
+
+{% block content %}
+<h2>{{ apiary_name }} - Beehives</h2>
+{% if apiary_location %}
+<p><strong>Location:</strong> {{ apiary_location }}</p>
+{% endif %}
+{% if apiary_lat and apiary_lng %}
+<p><strong>Coordinates:</strong> {{ "%.6f"|format(apiary_lat) }}, {{ "%.6f"|format(apiary_lng) }}</p>
+{% endif %}
+<a href="{{ url_for('add_beehive', apiary_id=apiary_id) }}" class="btn btn-primary mb-3">Add New Beehive</a>
+<a href="{{ url_for('view_visit_history', apiary_id=apiary_id) }}" class="btn btn-info mb-3">View Visit History</a>
+<a href="{{ url_for('apiaries') }}" class="btn btn-secondary mb-3">Back to Apiaries</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for beehive in beehives %}
+        <tr>
+            <td>{{ beehive[1] }}</td>
+            <td>{{ beehive[2] or '' }}</td>
+            <td>
+                {% if beehive[3] %}
+                    <img src="{{ url_for('serve_image', filename=beehive[3].split('/')[-1]) }}" alt="Beehive Image" style="max-width: 100px;">
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('edit_beehive', id=beehive[0]) }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('delete_beehive', id=beehive[0]) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Production Calculator - {{ recipe_name }}{% endblock %}
+
+{% block content %}
+<h2>Production Calculator for {{ recipe_name }}</h2>
+<p><strong>Recipe Yield:</strong> {{ recipe_yield }} {{ recipe_yield_unit }} per batch</p>
+<form method="post">
+    {% for ingredient in ingredients %}
+    <div class="mb-3">
+        <label for="avail_{{ ingredient[0] }}" class="form-label">Available {{ ingredient[0] }} ({{ ingredient[2] }})</label>
+        <input type="number" step="0.01" class="form-control" id="avail_{{ ingredient[0] }}" name="avail_{{ ingredient[0] }}" required>
+        <small class="form-text text-muted">Required: {{ ingredient[1] }} {{ ingredient[2] }}</small>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Calculate</button>
+</form>
+{% if max_prod is not none %}
+<div class="mt-4">
+    <h3>Result</h3>
+    <p>You can produce <strong>{{ "%.2f"|format(max_prod) }}</strong> units of the product.</p>
+</div>
+{% endif %}
+<a href="{{ url_for('recipes') }}" class="btn btn-secondary mt-3">Back to Recipes</a>
+{% endblock %}

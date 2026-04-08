@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Mark Visit - {{ apiary_name }}{% endblock %}
+
+{% block content %}
+<h2>Mark Visit for {{ apiary_name }}</h2>
+{% if apiary_location %}
+<p><strong>Location:</strong> {{ apiary_location }}</p>
+{% endif %}
+{% if apiary_lat and apiary_lng %}
+<p><strong>Coordinates:</strong> {{ "%.6f"|format(apiary_lat) }}, {{ "%.6f"|format(apiary_lng) }}</p>
+{% endif %}
+<form method="post">
+    <div class="mb-3">
+        <label for="visit_date" class="form-label">Visit Date</label>
+        <input type="date" class="form-control" id="visit_date" name="visit_date" value="{{ today }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="notes" class="form-label">Notes (optional)</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Mark Visit</button>
+    <a href="{{ url_for('apiaries') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

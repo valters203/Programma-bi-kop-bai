@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Harvest - Beekeeping Management{% endblock %}
+
+{% block content %}
+<h2>Edit Harvest</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" name="date" value="{{ harvest[0] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="honey_type" class="form-label">Honey Type</label>
+        <input type="text" class="form-control" id="honey_type" name="honey_type" value="{{ harvest[1] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="amount" class="form-label">Amount (kg)</label>
+        <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="{{ harvest[2] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="money_earned" class="form-label">Money Earned</label>
+        <input type="number" step="0.01" class="form-control" id="money_earned" name="money_earned" value="{{ harvest[3] }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Update Harvest</button>
+    <a href="{{ url_for('harvests') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

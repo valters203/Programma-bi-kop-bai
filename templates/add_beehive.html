@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Add Beehive - Beekeeping Management{% endblock %}
+
+{% block content %}
+<h2>Add New Beehive</h2>
+<form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="name" class="form-label">Beehive Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Beehive</button>
+    <a href="{{ url_for('view_apiary', apiary_id=apiary_id) }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

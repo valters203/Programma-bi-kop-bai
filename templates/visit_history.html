@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Visit History - {{ apiary_name }}{% endblock %}
+
+{% block content %}
+<h2>Visit History for {{ apiary_name }}</h2>
+{% if apiary_location %}
+<p><strong>Location:</strong> {{ apiary_location }}</p>
+{% endif %}
+{% if apiary_lat and apiary_lng %}
+<p><strong>Coordinates:</strong> {{ "%.6f"|format(apiary_lat) }}, {{ "%.6f"|format(apiary_lng) }}</p>
+{% endif %}
+<a href="{{ url_for('mark_visit', apiary_id=apiary_id) }}" class="btn btn-success mb-3">Mark New Visit</a>
+<a href="{{ url_for('export_visit_history', apiary_id=apiary_id) }}" class="btn btn-primary mb-3">Export to Excel</a>
+<a href="{{ url_for('view_apiary', apiary_id=apiary_id) }}" class="btn btn-secondary mb-3">Back to Apiary</a>
+
+{% if visits %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for visit in visits %}
+        <tr>
+            <td>{{ visit[0] }}</td>
+            <td>{{ visit[1] or '' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No visits recorded yet.</p>
+{% endif %}
+{% endblock %}

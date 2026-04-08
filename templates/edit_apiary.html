@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Apiary - Beekeeping Management{% endblock %}
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="card-title mb-0">Edit Apiary</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Apiary Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ apiary[0] }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location Description</label>
+                        <input type="text" class="form-control" id="location" name="location" value="{{ apiary[1] or '' }}" placeholder="e.g., Forest near Riga">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" step="any" class="form-control" id="latitude" name="latitude" value="{{ apiary[2] if apiary[2] else '' }}" placeholder="Click on map to set">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" step="any" class="form-control" id="longitude" name="longitude" value="{{ apiary[3] if apiary[3] else '' }}" placeholder="Click on map to set">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Location on Map</label>
+                        <div id="map" style="height: 400px; border: 1px solid #ddd; border-radius: 5px;"></div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Update Apiary</button>
+                        <a href="{{ url_for('apiaries') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Get initial coordinates
+    var initialLat = {{ apiary[2] if apiary[2] else 56.9496 }};
+    var initialLng = {{ apiary[3] if apiary[3] else 24.1052 }};
+
+    // Initialize the map
+    var map = L.map('map').setView([initialLat, initialLng], 7);
+
+    // Add OpenStreetMap France tiles (no referer requirement)
+    L.tileLayer('https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add a marker that can be moved
+    var marker = L.marker([initialLat, initialLng], {draggable: true}).addTo(map);
+
+    // Function to update form fields
+    function updateFields(lat, lng) {
+        document.getElementById('latitude').value = lat.toFixed(6);
+        document.getElementById('longitude').value = lng.toFixed(6);
+    }
+
+    // Update fields when marker is dragged
+    marker.on('dragend', function(e) {
+        var position = marker.getLatLng();
+        updateFields(position.lat, position.lng);
+    });
+
+    // Update marker and fields when map is clicked
+    map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        updateFields(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Initial update
+    updateFields(initialLat, initialLng);
+</script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Ingredient - Beekeeping Management{% endblock %}
+
+{% block content %}
+<h2>Edit Ingredient</h2>
+<form method="post">
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Quantity for {{ ingredient[0] }}</label>
+        <input type="number" step="0.01" class="form-control" id="quantity" name="quantity" value="{{ ingredient[1] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="unit" class="form-label">Unit</label>
+        <input type="text" class="form-control" id="unit" name="unit" value="{{ ingredient[2] }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Ingredient</button>
+    <a href="{{ url_for('view_recipe', recipe_id=recipe_id) }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
