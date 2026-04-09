@@ -1,28 +1,36 @@
 # Beekeeping Management Application
 
-A simple web-based application for managing beekeeping activities, including apiaries, beehives, honey harvests, and recipes.
+A web-based application for managing beekeeping activities, including apiaries, beehives, honey harvests, recipes, and visit history.
 
 ## Features
 
-- **Admin Login**: Secure authentication system with username and password for accessing the application.
-- **Apiaries Management**: Add, edit, delete apiaries and track visit history with custom dates and notes.
-- **Visit Tracking**: Mark visits with today's date or custom past dates, view complete visit history per apiary.
-- **Beehive Management**: Manage beehives within apiaries, including descriptions and images.
-- **Honey Harvest Tracking**: Record honey extraction events with date, type, amount, and earnings.
-- **Recipe Management**: Create recipes for honey-based products with ingredients and production calculator.
-- **Data Export**: Export all data to Excel files for backup or analysis, including individual apiary visit histories.
+- **User Authentication**: Register new users and login securely with password hashing.
+- **Apiaries Management**: Add, edit, delete apiaries with optional location and GPS coordinates.
+- **Visit Tracking**: Mark apiary visits with custom dates and notes, and view full visit history for each apiary.
+- **Beehive Management**: Add, edit, and delete beehives within apiaries, with descriptions and image uploads.
+- **Honey Harvest Tracking**: Record honey harvest events with date, honey type, amount, and money earned.
+- **Recipe Management**: Create recipes, add ingredients with quantity and units, and store recipe yields for production planning.
+- **Production Calculator**: Estimate how much product can be produced from available ingredient quantities.
+- **Weather Dashboard**: View current weather and forecast data on the home dashboard.
+- **Data Export**: Export apiaries, hives, visits, harvests, recipes, and ingredients to Excel files, including full workbook export.
 
 ## Requirements
 
 - Python 3.x
 - Flask
+- Flask-Login
 - pandas
 - openpyxl
+- bcrypt
 
 ## Installation
 
 1. Clone or download the repository.
-2. Install dependencies: `pip install -r requirements.txt`
+2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Usage
 
@@ -32,48 +40,56 @@ Run the web application:
 python web_app.py
 ```
 
-Open your browser and go to `http://localhost:5000`
+Open your browser and go to `http://localhost:5000`.
 
-You will be redirected to the login page. Use the admin credentials to access the application.
+You will be redirected to the login page. You can register a new account or log in with the default admin account.
 
-The application will create a local SQLite database (`beekeeping.db`) and an `images` folder for storing beehive photos.
+The application automatically creates a local SQLite database (`beekeeping.db`) and an `images` folder for storing beehive photos.
+
+## Default Credentials
+
+- Username: `admin`
+- Password: `admin123`
+
+> The admin account is created automatically the first time the application runs.
 
 ## Data Export
 
-You can export your data to Excel files:
+Export options include:
 
-- **Individual Sections**: Use the "Export to Excel" buttons on each page (Apiaries, Honey Harvest, Recipes)
-- **All Data**: Use the "Export All Data to Excel" button on the home page
-
-Exported files include:
-- Apiaries and Hives: Combined sheet with apiary and beehive information
-- Honey Harvests: All harvest records
-- Recipes: Recipe names and detailed ingredient lists
-- Full Export: All data in separate sheets within one Excel file
+- **Apiaries and Hives**: Download apiary details together with beehive information.
+- **Visit History**: Export visit logs for each apiary.
+- **Honey Harvests**: Export harvest records with amount and earnings.
+- **Recipes**: Export recipes, yields, and ingredient lists.
+- **Full Export**: Download all beekeeping data in one Excel workbook with separate sheets.
 
 ## Database Structure
 
 The SQLite database (`beekeeping.db`) includes these tables:
-- `apiaries` - apiary information
-- `beehives` - beehive details linked to apiaries
-- `honey_harvests` - harvest records
-- `recipes` - recipe names
-- `ingredients` - ingredient names
-- `recipe_ingredients` - links recipes to ingredients with quantities
+
+- `users` - registered user accounts
+- `apiaries` - apiary information with optional location and GPS coordinates
+- `apiary_visits` - visit records linked to apiaries
+- `beehives` - beehive records linked to apiaries, with descriptions and image paths
+- `honey_harvests` - honey harvest records linked to users
+- `recipes` - recipes linked to users, including yield and yield unit
+- `ingredients` - ingredient names linked to users
+- `recipe_ingredients` - recipe ingredient quantities and units
 
 ## Web Interface
 
-The application provides a clean web interface with navigation between sections:
+The application provides a clean interface with these sections:
 
-1. **Apiaries**: Manage apiaries and their beehives
-2. **Honey Harvest**: Record and view honey extraction data
-3. **Recipes**: Manage recipes and calculate production based on available ingredients
+1. **Home Dashboard**: Weather summary, totals for apiaries, beehives, harvests, visits, honey, and income.
+2. **Apiaries**: Manage apiaries, track visits, and view visit history.
+3. **Beehives**: Manage beehives within each apiary and upload photos.
+4. **Honey Harvest**: Record and manage harvest entries.
+5. **Recipes**: Create recipes, add ingredients, and calculate production capacity.
+6. **Statistics**: View summary statistics and latest activity.
 
 ## Notes
 
-- Images for beehives are stored locally in the `images/` directory and served via the web app.
-- All data is stored locally in the SQLite database.
-- The application runs on `localhost:5000` by default.
-- All data is stored locally in the SQLite database.
-- The application is designed to be simple and expandable.
+- Beehive photos are stored in the `images/` directory.
+- All application data is stored locally in `beekeeping.db`.
+- The app is designed for local use and easy extension.
 - Admin credentials: Username: Admin, Password: (stored as bcrypt hash)
