@@ -38,39 +38,6 @@
     <p>Use the navigation above or the buttons below to access different sections.</p>
     <p><a href="{{ url_for('export_all') }}" class="btn btn-success">Export All Data to Excel</a></p>
 </div>
-<div class="mb-4">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Weather Forecast</h5>
-            {% if weather is none %}
-                <p class="text-warning">Weather data is unavailable.</p>
-            {% elif weather.error %}
-                <p class="text-danger">{{ weather.error }}</p>
-            {% else %}
-                <p>Location: {{ weather.location.latitude }}, {{ weather.location.longitude }}</p>
-                {% if weather.current %}
-                    <p>Current temperature: {{ weather.current.temperature }}°C, wind speed: {{ weather.current.windspeed }} km/h, condition code: {{ weather.current.weathercode }}</p>
-                {% endif %}
-                {% if weather.daily and weather.daily.time %}
-                    <div class="row">
-                        {% for i in range(0, daily_count) %}
-                            <div class="col-md-4">
-                                <div class="card mb-2">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-subtitle mb-1 text-muted">{{ weather.daily.time[i] }}</h6>
-                                        <p class="mb-0">Min: {{ weather.daily.temperature_2m_min[i] }}°C</p>
-                                        <p class="mb-0">Max: {{ weather.daily.temperature_2m_max[i] }}°C</p>
-                                        <p class="mb-0">Code: {{ weather.daily.weathercode[i] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endif %}
-        </div>
-    </div>
-</div>
 <div class="hex-container">
     <a href="{{ url_for('apiaries') }}" class="hex-button">Apiaries</a>
     <a href="{{ url_for('harvests') }}" class="hex-button">Harvests</a>

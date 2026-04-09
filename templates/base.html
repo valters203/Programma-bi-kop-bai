@@ -11,12 +11,12 @@
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">Beekeeping</a>
             <div class="navbar-nav me-auto">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
                 <a class="nav-link" href="{{ url_for('apiaries') }}">Apiaries</a>
                 <a class="nav-link" href="{{ url_for('harvests') }}">Harvests</a>
                 <a class="nav-link" href="{{ url_for('recipes') }}">Recipes</a>
             </div>
             <div class="navbar-nav">
-                <span class="navbar-text me-3">Welcome, {{ session.username }}!</span>
                 <a class="btn btn-outline-light ms-3" href="{{ url_for('logout') }}">Logout</a>
             </div>
         </div>

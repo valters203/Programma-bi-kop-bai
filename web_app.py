@@ -311,6 +311,64 @@ def index():
 
     return render_template("index.html", weather=weather, daily_count=daily_count)
 
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    conn = sqlite3.connect('beekeeping.db')
+    c = conn.cursor()
+    user_id = session['user_id']
+    
+    # Total apiaries
+    c.execute("SELECT COUNT(*) FROM apiaries WHERE user_id = ?", (user_id,))
+    total_apiaries = c.fetchone()[0]
+    
+    # Total beehives
+    c.execute("""
+        SELECT COUNT(*) FROM beehives 
+        WHERE apiary_id IN (SELECT id FROM apiaries WHERE user_id = ?)
+    """, (user_id,))
+    total_beehives = c.fetchone()[0]
+    
+    # Total visits
+    c.execute("""
+        SELECT COUNT(*) FROM apiary_visits 
+        WHERE apiary_id IN (SELECT id FROM apiaries WHERE user_id = ?)
+    """, (user_id,))
+    total_visits = c.fetchone()[0]
+    
+    # Total honey harvested
+    c.execute("SELECT COALESCE(SUM(amount), 0) FROM honey_harvests WHERE user_id = ?", (user_id,))
+    total_honey = c.fetchone()[0]
+    
+    # Total income
+    c.execute("SELECT COALESCE(SUM(money_earned), 0) FROM honey_harvests WHERE user_id = ?", (user_id,))
+    total_income = c.fetchone()[0]
+    
+    # Latest visit
+    c.execute("""
+        SELECT visit_date, notes FROM apiary_visits 
+        WHERE apiary_id IN (SELECT id FROM apiaries WHERE user_id = ?) 
+        ORDER BY visit_date DESC LIMIT 1
+    """, (user_id,))
+    latest_visit_row = c.fetchone()
+    latest_visit = {'date': latest_visit_row[0], 'notes': latest_visit_row[1]} if latest_visit_row else None
+    
+    # Latest harvest
+    c.execute("SELECT date, honey_type, amount FROM honey_harvests WHERE user_id = ? ORDER BY date DESC LIMIT 1", (user_id,))
+    latest_harvest_row = c.fetchone()
+    latest_harvest = {'date': latest_harvest_row[0], 'type': latest_harvest_row[1], 'amount': latest_harvest_row[2]} if latest_harvest_row else None
+    
+    conn.close()
+    
+    return render_template("statistics.html", 
+                           total_apiaries=total_apiaries,
+                           total_beehives=total_beehives,
+                           total_visits=total_visits,
+                           total_honey=total_honey,
+                           total_income=total_income,
+                           latest_visit=latest_visit,
+                           latest_harvest=latest_harvest)
+
 @app.route('/apiaries')
 @login_required
 def apiaries():
