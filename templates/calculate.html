@@ -3,7 +3,8 @@
 {% block title %}Production Calculator - {{ recipe_name }}{% endblock %}
 
 {% block content %}
-<h2>Production Calculator for {{ recipe_name }}</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Production Calculator for {{ recipe_name }}</h2>
 <p><strong>Recipe Yield:</strong> {{ recipe_yield }} {{ recipe_yield_unit }} per batch</p>
 <form method="post">
     {% for ingredient in ingredients %}
@@ -13,7 +14,7 @@
         <small class="form-text text-muted">Required: {{ ingredient[1] }} {{ ingredient[2] }}</small>
     </div>
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Calculate</button>
+    <button type="submit" class="btn btn-honey">Calculate</button>
 </form>
 {% if max_prod is not none %}
 <div class="mt-4">
@@ -21,5 +22,6 @@
     <p>You can produce <strong>{{ "%.2f"|format(max_prod) }}</strong> units of the product.</p>
 </div>
 {% endif %}
-<a href="{{ url_for('recipes') }}" class="btn btn-secondary mt-3">Back to Recipes</a>
+<a href="{{ url_for('recipes') }}" class="btn btn-soft mt-3">Back to Recipes</a>
+</div>
 {% endblock %}

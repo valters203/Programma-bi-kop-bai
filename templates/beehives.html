@@ -3,17 +3,18 @@
 {% block title %}{{ apiary_name }} Beehives - Beekeeping Management{% endblock %}
 
 {% block content %}
-<h2>{{ apiary_name }} - Beehives</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">{{ apiary_name }} - Beehives</h2>
 {% if apiary_location %}
 <p><strong>Location:</strong> {{ apiary_location }}</p>
 {% endif %}
 {% if apiary_lat and apiary_lng %}
 <p><strong>Coordinates:</strong> {{ "%.6f"|format(apiary_lat) }}, {{ "%.6f"|format(apiary_lng) }}</p>
 {% endif %}
-<a href="{{ url_for('add_beehive', apiary_id=apiary_id) }}" class="btn btn-primary mb-3">Add New Beehive</a>
-<a href="{{ url_for('view_visit_history', apiary_id=apiary_id) }}" class="btn btn-info mb-3">View Visit History</a>
-<a href="{{ url_for('apiaries') }}" class="btn btn-secondary mb-3">Back to Apiaries</a>
-<table class="table table-striped">
+<a href="{{ url_for('add_beehive', apiary_id=apiary_id) }}" class="btn btn-honey mb-3">Add New Beehive</a>
+<a href="{{ url_for('view_visit_history', apiary_id=apiary_id) }}" class="btn btn-soft mb-3">View Visit History</a>
+<a href="{{ url_for('apiaries') }}" class="btn btn-soft mb-3">Back to Apiaries</a>
+<div class="table-responsive"><table class="table table-dark table-striped table-hover align-middle mb-0">
     <thead>
         <tr>
             <th>Name</th>
@@ -33,11 +34,12 @@
                 {% endif %}
             </td>
             <td>
-                <a href="{{ url_for('edit_beehive', id=beehive[0]) }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('edit_beehive', id=beehive[0]) }}" class="btn-sm btn-secondary">Edit</a>
                 <a href="{{ url_for('delete_beehive', id=beehive[0]) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
-</table>
+</table></div>
+</div>
 {% endblock %}

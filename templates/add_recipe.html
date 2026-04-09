@@ -3,7 +3,8 @@
 {% block title %}Add Recipe - Beekeeping Management{% endblock %}
 
 {% block content %}
-<h2>Add New Recipe</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Add New Recipe</h2>
 <form method="post">
     <div class="mb-3">
         <label for="name" class="form-label">Recipe Name</label>
@@ -16,7 +17,8 @@
             <input type="text" class="form-control" id="yield_unit" name="yield_unit" placeholder="units" value="units">
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Add Recipe</button>
-    <a href="{{ url_for('recipes') }}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-honey">Add Recipe</button>
+    <a href="{{ url_for('recipes') }}" class="btn btn-soft">Cancel</a>
 </form>
+</div>
 {% endblock %}

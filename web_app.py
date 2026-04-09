@@ -309,7 +309,50 @@ def index():
         days = daily.get('time', []) if isinstance(daily.get('time', []), list) else []
         daily_count = min(len(days), 3)
 
-    return render_template("index.html", weather=weather, daily_count=daily_count)
+    user_id = session['user_id']
+    conn = sqlite3.connect('beekeeping.db')
+    c = conn.cursor()
+
+    c.execute("SELECT COUNT(*) FROM apiaries WHERE user_id = ?", (user_id,))
+    total_apiaries = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM beehives WHERE apiary_id IN (SELECT id FROM apiaries WHERE user_id = ?)", (user_id,))
+    total_beehives = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM honey_harvests WHERE user_id = ?", (user_id,))
+    total_harvests = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM apiary_visits WHERE apiary_id IN (SELECT id FROM apiaries WHERE user_id = ?)", (user_id,))
+    total_visits = c.fetchone()[0]
+
+    c.execute("SELECT COALESCE(SUM(amount), 0) FROM honey_harvests WHERE user_id = ?", (user_id,))
+    total_honey = c.fetchone()[0]
+
+    c.execute("SELECT COALESCE(SUM(money_earned), 0) FROM honey_harvests WHERE user_id = ?", (user_id,))
+    total_income = c.fetchone()[0]
+
+    c.execute("SELECT date, honey_type, amount FROM honey_harvests WHERE user_id = ? ORDER BY date DESC LIMIT 1", (user_id,))
+    last_harvest_row = c.fetchone()
+    latest_harvest = {
+        'date': last_harvest_row[0],
+        'type': last_harvest_row[1],
+        'amount': last_harvest_row[2]
+    } if last_harvest_row else None
+
+    conn.close()
+
+    return render_template(
+        "index.html",
+        weather=weather,
+        daily_count=daily_count,
+        total_apiaries=total_apiaries,
+        total_beehives=total_beehives,
+        total_harvests=total_harvests,
+        total_visits=total_visits,
+        total_honey=total_honey,
+        total_income=total_income,
+        latest_harvest=latest_harvest,
+    )
 
 @app.route("/dashboard")
 @login_required

@@ -3,7 +3,8 @@
 {% block title %}Add Ingredient - Beekeeping Management{% endblock %}
 
 {% block content %}
-<h2>Add Ingredient</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Add Ingredient</h2>
 <form method="post">
     <div class="mb-3">
         <label for="name" class="form-label">Ingredient Name</label>
@@ -17,7 +18,8 @@
         <label for="unit" class="form-label">Unit</label>
         <input type="text" class="form-control" id="unit" name="unit" required>
     </div>
-    <button type="submit" class="btn btn-primary">Add Ingredient</button>
-    <a href="{{ url_for('view_recipe', recipe_id=recipe_id) }}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-honey">Add Ingredient</button>
+    <a href="{{ url_for('view_recipe', recipe_id=recipe_id) }}" class="btn btn-soft">Cancel</a>
 </form>
+</div>
 {% endblock %}

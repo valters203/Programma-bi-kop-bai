@@ -3,10 +3,11 @@
 {% block title %}Recipes - Beekeeping Management{% endblock %}
 
 {% block content %}
-<h2>Recipes</h2>
-<a href="{{ url_for('add_recipe') }}" class="btn btn-primary mb-3">Add New Recipe</a>
-<a href="{{ url_for('export_recipes') }}" class="btn btn-success mb-3">Export to Excel</a>
-<table class="table table-striped">
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Recipes</h2>
+<a href="{{ url_for('add_recipe') }}" class="btn btn-honey mb-3">Add New Recipe</a>
+<a href="{{ url_for('export_recipes') }}" class="btn btn-honey mb-3">Export to Excel</a>
+<div class="table-responsive"><table class="table table-dark table-striped table-hover align-middle mb-0">
     <thead>
         <tr>
             <th>Name</th>
@@ -20,12 +21,13 @@
             <td><a href="{{ url_for('view_recipe', recipe_id=recipe[0]) }}">{{ recipe[1] }}</a></td>
             <td>{{ recipe[2] }} {{ recipe[3] }}</td>
             <td>
-                <a href="{{ url_for('calculate_production', recipe_id=recipe[0]) }}" class="btn btn-sm btn-info">Calculate</a>
-                <a href="{{ url_for('edit_recipe', id=recipe[0]) }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('calculate_production', recipe_id=recipe[0]) }}" class="btn-sm btn-soft">Calculate</a>
+                <a href="{{ url_for('edit_recipe', id=recipe[0]) }}" class="btn-sm btn-secondary">Edit</a>
                 <a href="{{ url_for('delete_recipe', id=recipe[0]) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
-</table>
+</table></div>
+</div>
 {% endblock %}

@@ -3,7 +3,8 @@
 {% block title %}Mark Visit - {{ apiary_name }}{% endblock %}
 
 {% block content %}
-<h2>Mark Visit for {{ apiary_name }}</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Mark Visit for {{ apiary_name }}</h2>
 {% if apiary_location %}
 <p><strong>Location:</strong> {{ apiary_location }}</p>
 {% endif %}
@@ -19,7 +20,8 @@
         <label for="notes" class="form-label">Notes (optional)</label>
         <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Mark Visit</button>
-    <a href="{{ url_for('apiaries') }}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-honey">Mark Visit</button>
+    <a href="{{ url_for('apiaries') }}" class="btn btn-soft">Cancel</a>
 </form>
+</div>
 {% endblock %}

@@ -3,7 +3,8 @@
 {% block title %}Add Harvest - Beekeeping Management{% endblock %}
 
 {% block content %}
-<h2>Add New Harvest</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Add New Harvest</h2>
 <form method="post">
     <div class="mb-3">
         <label for="date" class="form-label">Date</label>
@@ -21,7 +22,8 @@
         <label for="money_earned" class="form-label">Money Earned</label>
         <input type="number" step="0.01" class="form-control" id="money_earned" name="money_earned">
     </div>
-    <button type="submit" class="btn btn-primary">Add Harvest</button>
-    <a href="{{ url_for('harvests') }}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-honey">Add Harvest</button>
+    <a href="{{ url_for('harvests') }}" class="btn btn-soft">Cancel</a>
 </form>
+</div>
 {% endblock %}

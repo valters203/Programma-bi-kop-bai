@@ -3,44 +3,89 @@
 {% block title %}Home - Beekeeping Management{% endblock %}
 
 {% block content %}
-<style>
-.hex-button {
-    width: 150px;
-    height: 130px;
-    background: linear-gradient(135deg, #f0c674, #d4a574);
-    clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    font-weight: bold;
-    font-size: 18px;
-    text-decoration: none;
-    margin: 15px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    border: 2px solid #b8860b;
-}
-.hex-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-.hex-container {
-    text-align: center;
-    margin-top: 50px;
-}
-</style>
-<div class="jumbotron">
-    <h1 class="display-4">Welcome to Beekeeping Management</h1>
-    <p class="lead">Manage your apiaries, beehives, honey harvests, and recipes all in one place.</p>
-    <hr class="my-4">
-    <p>Use the navigation above or the buttons below to access different sections.</p>
-    <p><a href="{{ url_for('export_all') }}" class="btn btn-success">Export All Data to Excel</a></p>
-</div>
-<div class="hex-container">
-    <a href="{{ url_for('apiaries') }}" class="hex-button">Apiaries</a>
-    <a href="{{ url_for('harvests') }}" class="hex-button">Harvests</a>
-    <a href="{{ url_for('recipes') }}" class="hex-button">Recipes</a>
+<div class="glass-panel p-4 p-md-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <div class="mb-3">
+                <span class="text-uppercase small section-muted" style="letter-spacing: 0.18em;">Beekeeping system</span>
+            </div>
+
+            <h1 class="display-5 fw-bold mb-3">
+                Manage your <span class="brand-accent">apiaries, harvests and recipes</span> in one place
+            </h1>
+
+            <p class="lead section-muted mb-4">
+                Keep your beekeeping records organized with a clean, structured and modern workspace designed for everyday use.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+                <a href="{{ url_for('export_all') }}" class="btn btn-honey">Export All Data to Excel</a>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="glass-panel p-4" style="background: linear-gradient(160deg, rgba(217,164,65,0.10), rgba(36,42,47,0.95));">
+                <div class="mb-3 section-muted">Quick stats</div>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="small section-muted mb-2">Apiaries</div>
+                            <div class="fw-bold" style="font-size: 1.55rem; line-height: 1;">{{ total_apiaries }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="small section-muted mb-2">Beehives</div>
+                            <div class="fw-bold" style="font-size: 1.55rem; line-height: 1;">{{ total_beehives }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="small section-muted mb-2">Harvests</div>
+                            <div class="fw-bold" style="font-size: 1.55rem; line-height: 1;">{{ total_harvests }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="small section-muted mb-2">Visits</div>
+                            <div class="fw-bold" style="font-size: 1.55rem; line-height: 1;">{{ total_visits }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="small section-muted mb-2">Honey</div>
+                            <div class="fw-bold" style="font-size: 1.55rem; line-height: 1;">{{ total_honey | round(2) }} kg</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="small section-muted mb-2">Revenue</div>
+                            <div class="fw-bold" style="font-size: 1.55rem; line-height: 1;">€ {{ total_income | round(2) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3" style="border-top: 1px solid rgba(255,255,255,0.07);">
+                    <div class="small section-muted mb-2">Latest harvest</div>
+
+                    <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                        {% if latest_harvest %}
+                            <div class="fw-semibold mb-1">{{ latest_harvest.amount | round(2) }} kg</div>
+                            <div class="section-muted small">{{ latest_harvest.type }} on {{ latest_harvest.date }}</div>
+                        {% else %}
+                            <div class="fw-semibold mb-1">No harvests yet</div>
+                            <div class="section-muted small">Record your first harvest to start tracking.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

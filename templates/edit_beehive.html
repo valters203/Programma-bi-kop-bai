@@ -3,7 +3,8 @@
 {% block title %}Edit Beehive - Beekeeping Management{% endblock %}
 
 {% block content %}
-<h2>Edit Beehive</h2>
+<div class="glass-panel p-4 mb-4">
+<h2 class="section-title">Edit Beehive</h2>
 <form method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label for="name" class="form-label">Beehive Name</label>
@@ -17,7 +18,8 @@
         <label for="image" class="form-label">New Image (optional)</label>
         <input type="file" class="form-control" id="image" name="image" accept="image/*">
     </div>
-    <button type="submit" class="btn btn-primary">Update Beehive</button>
-    <a href="{{ url_for('view_apiary', apiary_id=apiary_id) }}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-honey">Update Beehive</button>
+    <a href="{{ url_for('view_apiary', apiary_id=apiary_id) }}" class="btn btn-soft">Cancel</a>
 </form>
+</div>
 {% endblock %}
