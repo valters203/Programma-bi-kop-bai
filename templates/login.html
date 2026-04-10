@@ -31,11 +31,18 @@
                 </div>
                 <button type="submit" class="btn btn-honey w-100">Login</button>
             </form>
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    <div class="alert alert-danger mt-4">{{ messages[0] }}</div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else 'warning' if category == 'warning' else 'danger' }} mt-4">{{ message }}</div>
+                    {% endfor %}
                 {% endif %}
             {% endwith %}
+
+            <div class="text-center mt-3">
+                <span class="section-muted">Need an account?</span>
+                <a href="{{ url_for('register') }}" class="text-decoration-none">Register here</a>
+            </div>
         </div>
     </div>
 </div>

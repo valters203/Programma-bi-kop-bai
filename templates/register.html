@@ -27,7 +27,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password (min 6 characters)" required>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password (min 8 chars, upper, lower, number, symbol)" required>
+                    <div id="passwordHelp" class="form-text section-muted">Use at least 8 characters with uppercase, lowercase, number and symbol for a stronger password.</div>
                 </div>
                 <div class="mb-3">
                     <label for="confirm_password" class="form-label">Confirm Password</label>
@@ -38,12 +39,52 @@
                     <a href="/" class="btn btn-soft">Back to Login</a>
                 </div>
             </form>
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    <div class="alert alert-danger mt-4">{{ messages[0] }}</div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else 'warning' if category == 'warning' else 'danger' }} mt-4">{{ message }}</div>
+                    {% endfor %}
                 {% endif %}
             {% endwith %}
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var passwordInput = document.getElementById('password');
+        var passwordHelp = document.getElementById('passwordHelp');
+
+        function checkPassword() {
+            var password = passwordInput.value;
+            var strong = password.length >= 8
+                && /[a-z]/.test(password)
+                && /[A-Z]/.test(password)
+                && /[0-9]/.test(password)
+                && /[^A-Za-z0-9]/.test(password);
+
+            if (!password) {
+                passwordHelp.textContent = 'Use at least 8 characters with uppercase, lowercase, number and symbol for a stronger password.';
+                passwordHelp.classList.remove('text-danger');
+                passwordHelp.classList.remove('text-success');
+                passwordHelp.classList.add('section-muted');
+                return;
+            }
+
+            if (strong) {
+                passwordHelp.textContent = 'Strong password. Great job keeping your account secure.';
+                passwordHelp.classList.remove('section-muted');
+                passwordHelp.classList.remove('text-danger');
+                passwordHelp.classList.add('text-success');
+            } else {
+                passwordHelp.textContent = 'Weak password. Add uppercase, lowercase, number and symbol to improve safety.';
+                passwordHelp.classList.remove('section-muted');
+                passwordHelp.classList.remove('text-success');
+                passwordHelp.classList.add('text-danger');
+            }
+        }
+
+        passwordInput.addEventListener('input', checkPassword);
+    });
+</script>
 {% endblock %}

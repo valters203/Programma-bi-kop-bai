@@ -209,6 +209,48 @@ def get_weather_forecast(lat=56.97, lon=21.96):
         }
     }
 
+def translate_weather_code(code):
+    mapping = {
+        0: ("Clear sky", "☀️"),
+        1: ("Mainly clear", "🌤"),
+        2: ("Partly cloudy", "⛅"),
+        3: ("Overcast", "☁️"),
+        45: ("Fog", "🌫"),
+        48: ("Fog", "🌫"),
+        51: ("Light drizzle", "🌦"),
+        53: ("Moderate drizzle", "🌦"),
+        55: ("Dense drizzle", "🌧"),
+        56: ("Freezing drizzle", "🌧"),
+        57: ("Freezing drizzle", "🌧"),
+        61: ("Light rain", "🌧"),
+        63: ("Moderate rain", "🌧"),
+        65: ("Heavy rain", "🌧"),
+        66: ("Freezing rain", "🌧"),
+        67: ("Freezing rain", "🌧"),
+        71: ("Light snow", "🌨"),
+        73: ("Moderate snow", "🌨"),
+        75: ("Heavy snow", "🌨"),
+        77: ("Snow grains", "🌨"),
+        80: ("Rain showers", "🌦"),
+        81: ("Moderate showers", "🌧"),
+        82: ("Strong showers", "⛈"),
+        85: ("Snow showers", "🌨"),
+        86: ("Snow showers", "🌨"),
+        95: ("Thunderstorm", "⛈"),
+        96: ("Thunderstorm with hail", "⛈"),
+        99: ("Thunderstorm with hail", "⛈"),
+    }
+    return mapping.get(code, ("Unknown", "🌈"))
+
+def is_password_safe(password):
+    if len(password) < 8:
+        return False
+    has_lower = any(c.islower() for c in password)
+    has_upper = any(c.isupper() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_symbol = any(not c.isalnum() for c in password)
+    return has_lower and has_upper and has_digit and has_symbol
+
 @app.before_request
 def require_login():
     allowed = {"login", "register", "logout", "static", "serve_image"}  # names of view functions that don't require auth
@@ -264,7 +306,14 @@ def register():
             return render_template("register.html")
 
         if len(password) < 6:
-            flash("Password must be at least 6 characters long")
+            flash("Password must be at least 6 characters long", "danger")
+            return render_template("register.html")
+
+        if not is_password_safe(password):
+            flash(
+                "Password is not safe enough yet. Use at least 8 characters with uppercase, lowercase, number and symbol.",
+                "warning"
+            )
             return render_template("register.html")
 
         # Hash the password
@@ -303,11 +352,54 @@ def index():
     # Default coordinates are for Riga; change producer location if needed.
     weather = get_weather_forecast(lat=56.95, lon=24.11)
 
+    weather_summary = {'error': 'Weather data unavailable.'}
     daily_count = 0
     if weather and not weather.get('error'):
         daily = weather.get('daily', {})
         days = daily.get('time', []) if isinstance(daily.get('time', []), list) else []
         daily_count = min(len(days), 3)
+
+        current = weather.get('current', {})
+        current_desc, current_icon = translate_weather_code(current.get('weathercode'))
+        current_time = current.get('time')
+        if current_time:
+            try:
+                current_time = datetime.fromisoformat(current_time).strftime('%H:%M')
+            except ValueError:
+                pass
+
+        weather_summary = {
+            'current': {
+                'temperature': current.get('temperature'),
+                'windspeed': current.get('windspeed'),
+                'description': current_desc,
+                'icon': current_icon,
+                'time': current_time,
+            },
+            'daily': [],
+            'timezone': weather.get('timezone', 'UTC'),
+            'error': None,
+        }
+
+        for index in range(daily_count):
+            date_str = days[index]
+            try:
+                date_label = datetime.fromisoformat(date_str).strftime('%a, %b %d')
+            except ValueError:
+                date_label = date_str
+
+            weather_code = None
+            if isinstance(daily.get('weathercode'), list) and len(daily.get('weathercode')) > index:
+                weather_code = daily.get('weathercode')[index]
+            day_desc, day_icon = translate_weather_code(weather_code)
+
+            weather_summary['daily'].append({
+                'date': date_label,
+                'min': daily.get('temperature_2m_min', [])[index] if isinstance(daily.get('temperature_2m_min', []), list) and len(daily.get('temperature_2m_min', [])) > index else None,
+                'max': daily.get('temperature_2m_max', [])[index] if isinstance(daily.get('temperature_2m_max', []), list) and len(daily.get('temperature_2m_max', [])) > index else None,
+                'description': day_desc,
+                'icon': day_icon,
+            })
 
     user_id = session['user_id']
     conn = sqlite3.connect('beekeeping.db')
@@ -344,6 +436,7 @@ def index():
     return render_template(
         "index.html",
         weather=weather,
+        weather_summary=weather_summary,
         daily_count=daily_count,
         total_apiaries=total_apiaries,
         total_beehives=total_beehives,
